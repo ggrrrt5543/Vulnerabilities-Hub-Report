@@ -67,7 +67,16 @@ def test_read_and_pagination(api):
 
 
 @pytest.mark.parametrize(
-    "query", ["skip=-1", "skip=100001", "take=0", "take=101", "skip=no", "take=1.5", "take="]
+    "query",
+    [
+        "skip=-1",
+        "skip=100001",
+        "take=0",
+        "take=101",
+        "skip=no",
+        "take=1.5",
+        "take=",
+    ],
 )
 def test_bad_pagination(api, query):
     client, token, _, _ = api
@@ -87,7 +96,8 @@ def test_expired_and_refresh_tokens_rejected(api):
     client, token, app, _ = api
     assert (
         client.get(
-            "/api/message/chat-a", headers=token(expires_delta=timedelta(seconds=-1))
+            "/api/message/chat-a",
+            headers=token(expires_delta=timedelta(seconds=-1)),
         ).status_code
         == 401
     )
@@ -95,7 +105,8 @@ def test_expired_and_refresh_tokens_rejected(api):
         refresh = create_refresh_token(identity="alice")
     assert (
         client.get(
-            "/api/message/chat-a", headers={"Authorization": "Bearer " + refresh}
+            "/api/message/chat-a",
+            headers={"Authorization": "Bearer " + refresh},
         ).status_code
         == 401
     )
@@ -113,7 +124,15 @@ def test_reset_is_uniform_and_queued():
 
 @pytest.mark.parametrize(
     "body",
-    [None, [], {"email": 1}, {"email": ""}, {"email": "a b@x"}, {"email": "@x"}, {"email": "a@@x"}],
+    [
+        None,
+        [],
+        {"email": 1},
+        {"email": ""},
+        {"email": "a b@x"},
+        {"email": "@x"},
+        {"email": "a@@x"},
+    ],
 )
 def test_invalid_reset_input(body):
     queue = Mock()
@@ -214,10 +233,10 @@ def test_token_type_and_claims(tokens):
 def test_refresh_deadline_is_absolute(tokens):
     first = tokens.issue_tokens("alice")
     second = tokens.rotate_refresh(first["refresh"])
-    assert (
-        tokens._decode(first["refresh"], "refresh")["exp"]
-        == tokens._decode(second["refresh"], "refresh")["exp"]
-    )
+    assert tokens._decode(first["refresh"], "refresh")["exp"] == tokens._decode(
+        second["refresh"],
+        "refresh",
+    )["exp"]
 
 
 def test_concurrent_refresh_one_winner_and_revoke(tokens):
