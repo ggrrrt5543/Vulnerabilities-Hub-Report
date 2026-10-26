@@ -1,4 +1,3 @@
-# Регрессионные проверки авторизации, доступа к данным и безопасности сессий.
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from datetime import timedelta
