@@ -1,3 +1,4 @@
+// Серверные примеры защиты прав доступа, восстановления пароля и сессий.
 'use strict';
 const express = require('express');
 const jwt = require('jsonwebtoken');
