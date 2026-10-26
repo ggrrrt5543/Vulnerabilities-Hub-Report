@@ -1,3 +1,4 @@
+// Регрессионные проверки авторизации, доступа к данным и безопасности сессий.
 'use strict';
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
