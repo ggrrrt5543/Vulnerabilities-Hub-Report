@@ -34,7 +34,13 @@ def is_member(db, chat_id, user_id):
     return db.get(ChatMember, (chat_id, user_id)) is not None
 
 
-def create_app(engine, jwt_secret, session_is_active, issuer="hub-examples", audience="hub-api"):
+def create_app(
+    engine,
+    jwt_secret,
+    session_is_active,
+    issuer="hub-examples",
+    audience="hub-api",
+):
     if len(jwt_secret.encode()) < 32:
         raise ValueError("Секрет JWT должен содержать не менее 32 байт")
     app = Flask(__name__)
@@ -91,7 +97,10 @@ def create_app(engine, jwt_secret, session_is_active, issuer="hub-examples", aud
                 .limit(take)
             )
             return jsonify(
-                [{"id": m.id, "text": m.text, "authorId": m.author_id} for m in db.scalars(query)]
+                [
+                    {"id": m.id, "text": m.text, "authorId": m.author_id}
+                    for m in db.scalars(query)
+                ]
             )
 
     @app.get("/api/chats/<chat_id>")
