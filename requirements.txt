@@ -1,3 +1,4 @@
+# Библиотеки для HTTP API, работы с БД, токенами и Socket.IO.
 Flask>=3.1,<4
 Flask-JWT-Extended>=4.7,<5
 SQLAlchemy>=2.0,<3
