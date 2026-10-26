@@ -1,4 +1,3 @@
-# Серверные примеры защиты прав доступа, восстановления пароля и сессий.
 """Socket.IO: авторизация на этапе соединения и проверка членства на отправке.
 
 Это Socket.IO, а не совместимый с произвольным WebSocket-клиентом сервер.
@@ -17,7 +16,6 @@ def create_server(lookup_user_by_token, db_member_exists, save_message, allowed_
 
     @sio.event
     async def connect(sid, environ, auth):
-        # Клиент передаёт auth={token: ...} в пакете подключения Socket.IO, не в URL.
         token = auth.get("token") if isinstance(auth, dict) else None
         if not isinstance(token, str) or not token or len(token) > 8192:
             return False
@@ -33,7 +31,6 @@ def create_server(lookup_user_by_token, db_member_exists, save_message, allowed_
             session = await sio.get_session(sid)
         except KeyError:
             return {"error": "Требуется авторизация"}
-        # Повторная проверка выявляет истечение и отзыв токена после подключения.
         user = await lookup_user_by_token(session.get("token"))
         if not isinstance(user, dict) or user.get("id") != session.get("user_id"):
             await sio.disconnect(sid)
@@ -54,7 +51,4 @@ def create_server(lookup_user_by_token, db_member_exists, save_message, allowed_
         # authorId и userId из входных данных не используются.
         await save_message(chat_id, session["user_id"], text)
         return {"status": "ok"}
-
-    # Подписки и рассылка намеренно не реализованы: удалённый участник не должен
-    # оставаться в комнате и продолжать получать события без новой проверки доступа.
     return sio
