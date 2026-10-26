@@ -1,0 +1,46 @@
+name: Проверка примеров
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Локальные тесты и синтаксис
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Получить код
+        uses: actions/checkout@v4
+      - name: Подготовить Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: |
+            requirements-lock.txt
+            requirements-dev.txt
+      - name: Подготовить Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Установить зависимости Python
+        run: python -m pip install -r requirements-lock.txt -r requirements-dev.txt
+      - name: Установить зависимости JavaScript
+        run: npm ci --ignore-scripts
+      - name: Выполнить тесты Python
+        run: python -m pytest -q
+      - name: Проверить синтаксис Python и Bash
+        run: |
+          ruff check fixes poc tests
+          ruff format --check fixes poc tests
+          python -m compileall -q fixes poc tests
+          bash -n poc/idor_messages.sh poc/idor_profile.sh
+      - name: Проверить JavaScript
+        run: |
+          npm run check
+          npm test

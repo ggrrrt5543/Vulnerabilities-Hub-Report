@@ -1,0 +1,11 @@
+.venv/
+node_modules/
+__pycache__/
+.pytest_cache/
+*.pyc
+.env
+.env.*
+!.env.example
+*.db
+coverage/
+.ruff_cache/

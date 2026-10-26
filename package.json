@@ -1,0 +1,9 @@
+{
+  "name": "hub-security-examples",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Учебные примеры исправления контроля доступа Hub",
+  "scripts": {"test": "node --test tests/profile.test.js", "check": "node --check fixes/idor_profile_express.js"},
+  "engines": {"node": ">=22"},
+  "dependencies": {"express": "^5.1.0", "jsonwebtoken": "^9.0.2", "pg": "^8.16.0"}
+}
