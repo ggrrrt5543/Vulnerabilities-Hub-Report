@@ -27,7 +27,6 @@ def verify_captcha(token, secret, expected_hostname, post=requests.post):
 
 
 def require_captcha(secret, expected_hostname):
-    # Пример для reCAPTCHA v2; для v3 нужны также проверки action и score.
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
