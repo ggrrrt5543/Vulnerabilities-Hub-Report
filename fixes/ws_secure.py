@@ -11,7 +11,9 @@ def create_server(lookup_user_by_token, db_member_exists, save_message, allowed_
     if not allowed_origins or "*" in allowed_origins:
         raise ValueError("Нужен явный список разрешённых источников")
     sio = socketio.AsyncServer(
-        async_mode="asgi", cors_allowed_origins=list(allowed_origins), max_http_buffer_size=16_384
+        async_mode="asgi",
+        cors_allowed_origins=list(allowed_origins),
+        max_http_buffer_size=16_384,
     )
 
     @sio.event
@@ -20,7 +22,9 @@ def create_server(lookup_user_by_token, db_member_exists, save_message, allowed_
         if not isinstance(token, str) or not token or len(token) > 8192:
             return False
         user = await lookup_user_by_token(token)
-        if not isinstance(user, dict) or (not isinstance(user.get("id"), str) or not user["id"]):
+        if not isinstance(user, dict) or (
+            not isinstance(user.get("id"), str) or not user["id"]
+        ):
             return False
         await sio.save_session(sid, {"user_id": user["id"], "token": token})
         return True
@@ -51,4 +55,5 @@ def create_server(lookup_user_by_token, db_member_exists, save_message, allowed_
         # authorId и userId из входных данных не используются.
         await save_message(chat_id, session["user_id"], text)
         return {"status": "ok"}
+
     return sio
