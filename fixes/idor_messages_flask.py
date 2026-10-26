@@ -1,4 +1,3 @@
-# Серверные примеры защиты прав доступа, восстановления пароля и сессий.
 """Контроль доступа к сообщениям и метаданным на тестовой схеме SQLAlchemy."""
 
 from flask import Flask, jsonify, request
@@ -36,7 +35,6 @@ def is_member(db, chat_id, user_id):
 
 
 def create_app(engine, jwt_secret, session_is_active, issuer="hub-examples", audience="hub-api"):
-    # Секрет передаёт вызывающее приложение; небезопасного значения по умолчанию нет.
     if len(jwt_secret.encode()) < 32:
         raise ValueError("Секрет JWT должен содержать не менее 32 байт")
     app = Flask(__name__)
@@ -52,7 +50,6 @@ def create_app(engine, jwt_secret, session_is_active, issuer="hub-examples", aud
 
     @manager.token_in_blocklist_loader
     def token_is_revoked(_header, payload):
-        # Ошибка хранилища не должна превращаться в разрешение доступа.
         return not session_is_active(payload)
 
     @manager.unauthorized_loader
@@ -77,7 +74,6 @@ def create_app(engine, jwt_secret, session_is_active, issuer="hub-examples", aud
     @jwt_required()
     def get_messages(chat_id):
         with sessions() as db:
-            # Сначала проверка членства; затем чтение данных.
             if not is_member(db, chat_id, get_jwt_identity()):
                 return jsonify(error="Доступ запрещён"), 403
             try:
